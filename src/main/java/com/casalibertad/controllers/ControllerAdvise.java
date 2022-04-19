@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.casalibertad.dtos.ErrorDTO;
+import com.casalibertad.dtos.response.ErrorDTO;
 import com.casalibertad.entities.LogEntity;
 import com.casalibertad.enums.ErrorMessageEnum;
 import com.casalibertad.repositories.LogRepository;

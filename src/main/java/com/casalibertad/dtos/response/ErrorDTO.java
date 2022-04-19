@@ -1,4 +1,4 @@
-package com.casalibertad.dtos;
+package com.casalibertad.dtos.response;
 
 import lombok.Data;
 
