@@ -1,5 +1,7 @@
 package com.casalibertad.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,15 +10,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.casalibertad.dtos.response.VisitorDTO;
+import com.casalibertad.services.VisitorService;
+
 @RestController
 @RequestMapping("reception/visitor")
 public class ReceptionController {
 	
+	@Autowired
+	private VisitorService visitorService;
+	
 	@GetMapping
-	public ResponseEntity<?> getVisitorInformation(@RequestParam long document_type_id
+	public ResponseEntity<VisitorDTO> getVisitorInformation(@RequestParam long document_type_id
 			, @RequestParam String document_type_number ){
-		
-		return null;
+		VisitorDTO visitorDTO = visitorService.getVisitorInformation(document_type_id, document_type_number);
+		return new ResponseEntity<VisitorDTO>(visitorDTO, HttpStatus.OK);
 	}
 	
 	@PostMapping
