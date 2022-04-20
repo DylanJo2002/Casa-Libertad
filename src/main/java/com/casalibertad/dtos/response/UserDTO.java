@@ -6,7 +6,7 @@ import lombok.Data;
 public class UserDTO {
 	private int user_id;
 	private DocumentTypeDTO document_type;
-	private long document_number;
+	private String document_number;
 	private String names_user;
 	private String first_last_name;
 	private String secound_last_name;

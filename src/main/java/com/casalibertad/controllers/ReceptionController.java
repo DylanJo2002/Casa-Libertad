@@ -21,7 +21,7 @@ public class ReceptionController {
 	private VisitorService visitorService;
 	
 	@GetMapping
-	public ResponseEntity<VisitorDTO> getVisitorInformation(@RequestParam long document_type_id
+	public ResponseEntity<VisitorDTO> getVisitorInformation(@RequestParam int document_type_id
 			, @RequestParam String document_type_number ){
 		VisitorDTO visitorDTO = visitorService.getVisitorInformation(document_type_id, document_type_number);
 		return new ResponseEntity<VisitorDTO>(visitorDTO, HttpStatus.OK);

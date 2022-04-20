@@ -24,7 +24,7 @@ public class UserEntity {
 	private DocumentTypeEntity documentType;
 	
 	@Column(name = "document_number")
-	private long documentNumber;
+	private String documentNumber;
 	
 	@Column(name = "names_user")
 	private String namesUser;
@@ -36,8 +36,8 @@ public class UserEntity {
 	private String secoundLastName;
 	
 	@Column(name = "phone_1")
-	private String phone1;
+	private long phone1;
 	
 	@Column(name = "phone_2")
-	private String phone2;
+	private long phone2;
 }
