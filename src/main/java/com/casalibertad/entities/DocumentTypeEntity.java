@@ -17,5 +17,5 @@ public class DocumentTypeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int uniqid;
 	@Column(name = "document_name")
-	private String document_name;
+	private String documentName;
 }
