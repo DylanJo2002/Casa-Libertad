@@ -1,0 +1,395 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Casa Libertad API",
+    "description": "This is an API for Casa Libertad proyect.",
+    "contact": {
+      "email": "dylan.joel.caicedo@gmail.com"
+    },
+    "license": {
+      "name": "Spring",
+      "url": "https://spring.io/trademarks"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://virtserver.swaggerhub.com/DylanJo2002/Casa_Libertad/1.0.0",
+      "description": "SwaggerHub API Auto Mocking"
+    },
+    {
+      "url": "http://localhost:8080/api",
+      "description": "Development Server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Reception",
+      "description": "Operations available for Reception module"
+    }
+  ],
+  "paths": {
+    "/reception/visitor": {
+      "get": {
+        "tags": [
+          "Reception"
+        ],
+        "summary": "Retrieve visitor information, according a document type and document number.",
+        "description": "By passing and appropiate document type and document number in query params, this endpoint going to retrieve vistior information.\n",
+        "parameters": [
+          {
+            "name": "document_type_id",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "document_number",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User and user's visit information exist or visit information is empty and was retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Visitor"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User and user's visit information does not exist."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Reception"
+        ],
+        "summary": "Update the user and a visit information.",
+        "description": "By passing and appropiate user and visit information in a JSON, this endpoint going to update the user and a visit information. \n",
+        "parameters": [
+          {
+            "name": "document_type_id",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "document_number",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/New_visitor"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User and user's visit information was updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Visitor"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Reception"
+        ],
+        "summary": "Create a new user and a visit information.",
+        "description": "By passing and appropiate user and visitin information in a JSON, this endpoint going to create a new user and a visit information. \n",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/New_visitor"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "User and user's visit information was created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Visitor"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Visitor": {
+        "required": [
+          "data_processing_consent",
+          "other_reason",
+          "reason_visit",
+          "service_channel",
+          "uniqid",
+          "user",
+          "workshop_appointment"
+        ],
+        "type": "object",
+        "properties": {
+          "uniqid": {
+            "type": "number",
+            "example": 1
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "data_processing_consent": {
+            "type": "string",
+            "example": "T"
+          },
+          "reason_visit": {
+            "$ref": "#/components/schemas/Visit_reason"
+          },
+          "other_reason": {
+            "type": "string",
+            "example": "Other reason"
+          },
+          "workshop_appointment": {
+            "$ref": "#/components/schemas/Visit_reason"
+          },
+          "service_channel": {
+            "$ref": "#/components/schemas/Service_channel"
+          }
+        }
+      },
+      "User": {
+        "required": [
+          "document_number",
+          "document_type",
+          "first_last_name",
+          "names_user",
+          "phone_1",
+          "phone_2",
+          "secound_last_name",
+          "user_id"
+        ],
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "number",
+            "example": 1
+          },
+          "document_type": {
+            "$ref": "#/components/schemas/Document_type"
+          },
+          "document_number": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "names_user": {
+            "type": "string",
+            "example": "Juan Carlos"
+          },
+          "first_last_name": {
+            "type": "string",
+            "example": "Rodrigo"
+          },
+          "secound_last_name": {
+            "type": "string",
+            "example": "Pérez"
+          },
+          "phone_1": {
+            "type": "number",
+            "example": 3299910012
+          },
+          "phone_2": {
+            "type": "number",
+            "example": 3012290321
+          }
+        }
+      },
+      "Document_type": {
+        "required": [
+          "document_name",
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "document_name": {
+            "type": "string",
+            "example": "Cédula de Ciudadanía"
+          }
+        }
+      },
+      "Visit_reason": {
+        "required": [
+          "reason",
+          "uniqid"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1"
+          },
+          "reason": {
+            "type": "string",
+            "example": "Information"
+          }
+        }
+      },
+      "Service_channel": {
+        "required": [
+          "channel",
+          "uniqid"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1"
+          },
+          "channel": {
+            "type": "string",
+            "example": "Information"
+          }
+        }
+      },
+      "User_identification": {
+        "required": [
+          "document_number",
+          "document_type_id"
+        ],
+        "properties": {
+          "document_type_id": {
+            "type": "number",
+            "example": 1
+          },
+          "document_number": {
+            "type": "string",
+            "example": "Cédula de Ciudadanía"
+          }
+        }
+      },
+      "New_visitor": {
+        "required": [
+          "data_processing_consent",
+          "other_reason",
+          "reason_visit",
+          "service_channel_id",
+          "user",
+          "workshop_appointment_id"
+        ],
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/New_user"
+          },
+          "data_processing_consent": {
+            "type": "string",
+            "enum": [
+              "T",
+              "F"
+            ]
+          },
+          "reason_visit_id": {
+            "type": "number",
+            "example": 1
+          },
+          "other_reason": {
+            "type": "string",
+            "example": "Other reason"
+          },
+          "workshop_appointment_id": {
+            "type": "number",
+            "example": 1
+          },
+          "service_channel_id": {
+            "type": "number",
+            "example": 1
+          }
+        }
+      },
+      "New_user": {
+        "required": [
+          "document_number",
+          "document_type_id",
+          "first_last_name",
+          "names_user",
+          "phone_1",
+          "phone_2",
+          "secound_last_name"
+        ],
+        "type": "object",
+        "properties": {
+          "document_type_id": {
+            "type": "number",
+            "example": 1
+          },
+          "document_number": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "names_user": {
+            "type": "string",
+            "example": "Juan Carlos"
+          },
+          "first_last_name": {
+            "type": "string",
+            "example": "Rodrigo"
+          },
+          "secound_last_name": {
+            "type": "string",
+            "example": "Pérez"
+          },
+          "phone_1": {
+            "type": "number",
+            "example": 3299910012
+          },
+          "phone_2": {
+            "type": "number",
+            "example": 3012290321
+          }
+        }
+      }
+    }
+  }
+}
