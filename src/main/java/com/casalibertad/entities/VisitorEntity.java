@@ -20,7 +20,8 @@ public class VisitorEntity {
 	private int uniqid;
 	
 	@ManyToOne
-	private UserEntity user_id;
+	@JoinColumn(name = "user_id")
+	private UserEntity user;
 	
 	@Column(name = "data_processing_consent")
 	private char dataProcessingConsent;
@@ -39,4 +40,7 @@ public class VisitorEntity {
 	@ManyToOne
 	@JoinColumn(name = "service_channel")
 	private ServiceChannelEntity serviceChannel;
+	
+	@Column(name="created_date", insertable=false)
+	private String createdDate;
 }

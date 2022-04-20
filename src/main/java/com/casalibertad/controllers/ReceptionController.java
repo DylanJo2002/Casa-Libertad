@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.casalibertad.dtos.response.VisitorDTO;
+import com.casalibertad.exceptions.NotFoundException;
 import com.casalibertad.services.VisitorService;
 
 @RestController
@@ -22,8 +23,9 @@ public class ReceptionController {
 	
 	@GetMapping
 	public ResponseEntity<VisitorDTO> getVisitorInformation(@RequestParam int document_type_id
-			, @RequestParam String document_type_number ){
-		VisitorDTO visitorDTO = visitorService.getVisitorInformation(document_type_id, document_type_number);
+			, @RequestParam String document_number ) throws Exception{
+
+		VisitorDTO visitorDTO = visitorService.getVisitorDTO(document_type_id, document_number);
 		return new ResponseEntity<VisitorDTO>(visitorDTO, HttpStatus.OK);
 	}
 	

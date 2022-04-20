@@ -8,6 +8,5 @@ import com.casalibertad.entities.LogEntity;
 @Repository
 public interface LogRepository extends JpaRepository<LogEntity, String>{
 	
-	
 
 }

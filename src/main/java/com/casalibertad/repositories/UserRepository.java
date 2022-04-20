@@ -10,5 +10,4 @@ import com.casalibertad.entities.UserEntity;
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	
 	public UserEntity findByDocumentTypeAndDocumentNumber(DocumentTypeEntity documentTypeEntity, String documentNumber);
-
 }

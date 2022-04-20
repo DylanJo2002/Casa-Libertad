@@ -1,12 +1,10 @@
 package com.casalibertad.entities;
 
-import java.sql.Timestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.ColumnDefault;
 
 import lombok.Data;
 
@@ -16,8 +14,10 @@ import lombok.Data;
 public class LogEntity {
 	@Id
 	private String uniqid;
+	@Column(name = "message")
 	private String message;
-	@ColumnDefault("SYSTIMESTAMP")
-	private Timestamp error_date;
+	
+	@Column(name = "error_date", insertable = false)
+	private String errorDate;
 	
 }

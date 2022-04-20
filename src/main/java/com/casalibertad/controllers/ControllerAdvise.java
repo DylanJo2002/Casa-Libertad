@@ -1,6 +1,8 @@
 package com.casalibertad.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -16,18 +18,18 @@ public class ControllerAdvise {
 	private ExceptionLoggin exceptionLoggin;
 	
 	@ExceptionHandler(Exception.class) 
-	public ErrorDTO exceptionHandler(Exception ex) {
+	public ResponseEntity<ErrorDTO> exceptionHandler(Exception ex) {
 		String id = exceptionLoggin.getUUID();
 		String message = exceptionLoggin.buildMessage(ErrorMessageEnum.InternalError,id
 				,ex.getMessage());
 		exceptionLoggin.saveLog(message,id);
 		ErrorDTO errorDTO = new ErrorDTO(message);
-		return errorDTO;
+		return new ResponseEntity<ErrorDTO>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@ExceptionHandler(NotFoundException.class) 
-	public ErrorDTO exceptionHandler(NotFoundException ex) {
+	public ResponseEntity<ErrorDTO> exceptionHandler(NotFoundException ex) {
 		ErrorDTO errorDTO = new ErrorDTO(ex.getMessage());
-		return errorDTO;
+		return new ResponseEntity<ErrorDTO>(errorDTO, HttpStatus.NOT_FOUND);
 	}
 }

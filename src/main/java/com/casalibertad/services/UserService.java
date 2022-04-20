@@ -22,12 +22,11 @@ public class UserService {
 	@Autowired
 	private ExceptionLoggin exceptionLoggin;
 	
-	public UserDTO getUserEntity(int document_type_id, String document_type_number) throws NotFoundException {
+	public UserEntity getUserEntity(int document_type_id, String document_type_number) throws NotFoundException {
 		
 		//documentTypeService.getDocumentType validate document type existence
 		DocumentTypeEntity documentTypeEntity = documentTypeService.getDocumentType(document_type_id);
-		UserEntity userEntity = userRepository.findByDocumentTypeAndDocumentNumber(documentTypeEntity, document_type_number);
-		
+		UserEntity userEntity = userRepository.findByDocumentTypeAndDocumentNumber(documentTypeEntity, document_type_number);		
 		
 		if(userEntity == null) {
 			String cause = String.format("Does not exist an user with document type %s and document number %s", 
@@ -39,10 +38,14 @@ public class UserService {
 			throw new NotFoundException(message);
 		}
 			
-		return mapToUserDTO(userEntity);
+		return userEntity;
 	}
 	
-	private UserDTO mapToUserDTO(UserEntity userEntity) {
+	public UserDTO getUserDTO(int document_type_id, String document_type_number) throws NotFoundException {
+		return mapToUserDTO(getUserEntity(document_type_id, document_type_number));
+	}
+	
+	public UserDTO mapToUserDTO(UserEntity userEntity) {
 		UserDTO userDTO = new UserDTO();
 		DocumentTypeDTO documentTypeDTO = new DocumentTypeDTO();
 		

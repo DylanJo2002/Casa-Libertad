@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.casalibertad.entities.LogEntity;
 import com.casalibertad.enums.ErrorMessageEnum;
 import com.casalibertad.services.LogService;
 
@@ -30,10 +29,7 @@ public class ExceptionLoggin {
 	}
 	
 	public void saveLog(String message ,String id) {
-		LogEntity logEntity = new LogEntity();
-		logEntity.setUniqid(id);
-		logEntity.setMessage(message);
-		logService.createLog(logEntity);
+		logService.createLog(id, message);
 	}
 	
 }

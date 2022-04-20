@@ -3,6 +3,6 @@ spring:
     url: jdbc:oracle:thin:@172.21.18.9:1521/pdb00016.lanbdpruebas.vcnlanglobalscj.oraclevcn.com
     username: SICASALIBERTAD
     password: CAS4LIBERTAd2020*
-    driver-class-name: oracle.jdbc.OracleDriver
- 
+    driver-class-name: oracle.jdbc.OracleDriver  jpa:    show-sql: true
+    
  

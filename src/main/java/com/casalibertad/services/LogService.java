@@ -12,7 +12,10 @@ public class LogService {
 	@Autowired
 	private LogRepository logRepository;
 	
-	public void createLog(LogEntity logEntity) {
+	public void createLog(String uniqid, String message) {
+		LogEntity logEntity = new LogEntity();
+		logEntity.setUniqid(uniqid);
+		logEntity.setMessage(message);
 		logRepository.save(logEntity);
 	}
 }

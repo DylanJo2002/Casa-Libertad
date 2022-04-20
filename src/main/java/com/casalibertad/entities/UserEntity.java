@@ -38,6 +38,6 @@ public class UserEntity {
 	@Column(name = "phone_1")
 	private long phone1;
 	
-	@Column(name = "phone_2")
-	private long phone2;
+	@Column(name = "phone_2", nullable = true)
+	private Long phone2;
 }
