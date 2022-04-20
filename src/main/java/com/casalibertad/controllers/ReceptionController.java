@@ -6,12 +6,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.casalibertad.dtos.request.NewVisitorDTO;
 import com.casalibertad.dtos.response.VisitorDTO;
+import com.casalibertad.exceptions.ConflictException;
 import com.casalibertad.exceptions.NotFoundException;
+import com.casalibertad.services.UserService;
 import com.casalibertad.services.VisitorService;
 
 @RestController
@@ -30,9 +34,15 @@ public class ReceptionController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<?> createVisitorInformation(){
+	public ResponseEntity<VisitorDTO> createVisitorInformation(@RequestBody NewVisitorDTO newVisitorDTO)
+			throws NotFoundException, ConflictException{
+		VisitorDTO visitorDTO = null;
+		if(visitorService.isValidVisitorDTO(newVisitorDTO)) {
+			visitorDTO = visitorService.mapToVisitorDTO(
+					visitorService.createVisitorEntity(newVisitorDTO));
+		}
 		
-		return null;
+		return new ResponseEntity<VisitorDTO>(visitorDTO, HttpStatus.CREATED);
 	}
 	
 	@PutMapping

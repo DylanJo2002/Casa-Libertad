@@ -3,11 +3,13 @@ package com.casalibertad.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.casalibertad.dtos.request.NewUserDTO;
 import com.casalibertad.dtos.response.DocumentTypeDTO;
 import com.casalibertad.dtos.response.UserDTO;
 import com.casalibertad.entities.DocumentTypeEntity;
 import com.casalibertad.entities.UserEntity;
 import com.casalibertad.enums.ErrorMessageEnum;
+import com.casalibertad.exceptions.ConflictException;
 import com.casalibertad.exceptions.NotFoundException;
 import com.casalibertad.loggin.ExceptionLoggin;
 import com.casalibertad.repositories.UserRepository;
@@ -62,5 +64,46 @@ public class UserService {
 		userDTO.setPhone_2(userEntity.getPhone2());
 		
 		return userDTO; 
+	}
+
+	public UserEntity createUserEntity(NewUserDTO userDTO) throws NotFoundException {
+		UserEntity userEntity = new UserEntity();
+		DocumentTypeEntity documentTypeEntity = documentTypeService.getDocumentType(
+				userDTO.getDocument_type_id());
+		
+		userEntity.setDocumentType(documentTypeEntity);
+		userEntity.setDocumentNumber(userDTO.getDocument_number());
+		userEntity.setNamesUser(userDTO.getNames_user());
+		userEntity.setFirstLastName(userDTO.getFirst_last_name());
+		userEntity.setSecoundLastName(userDTO.getSecound_last_name());
+		userEntity.setPhone1(userDTO.getPhone_1());
+		userEntity.setPhone2(userDTO.getPhone_2());
+		
+		return userRepository.save(userEntity);
+	}
+
+	public boolean isValidUserDTO(NewUserDTO userDTO) 
+			throws NotFoundException, ConflictException {
+		
+		
+		DocumentTypeEntity documentTypeEntity = documentTypeService.getDocumentType(
+				userDTO.getDocument_type_id());
+		
+		UserEntity userEntity = userRepository
+				.findByDocumentTypeAndDocumentNumber(documentTypeEntity, userDTO.getDocument_number());
+
+		/*To valid there is not some user with same document type and number */
+
+		if(userEntity != null) {
+			String cause = String.format("There is already an user registred with %s and %s", 
+					documentTypeEntity.getDocumentName(),userDTO.getDocument_number());
+			String id = exceptionLoggin.getUUID();
+			String message = exceptionLoggin.buildMessage(ErrorMessageEnum.ConflictException, id, cause);
+			exceptionLoggin.saveLog(message, id);
+			
+			throw new ConflictException(message);
+		}
+		
+		return documentTypeEntity != null;
 	}
 }

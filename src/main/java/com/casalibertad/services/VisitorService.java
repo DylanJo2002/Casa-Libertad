@@ -3,6 +3,7 @@ package com.casalibertad.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.casalibertad.dtos.request.NewVisitorDTO;
 import com.casalibertad.dtos.response.ServiceChannelDTO;
 import com.casalibertad.dtos.response.UserDTO;
 import com.casalibertad.dtos.response.VisitReasonDTO;
@@ -12,6 +13,7 @@ import com.casalibertad.entities.ServiceChannelEntity;
 import com.casalibertad.entities.UserEntity;
 import com.casalibertad.entities.VisitorEntity;
 import com.casalibertad.entities.WorkshopAppointmentReasonEntity;
+import com.casalibertad.exceptions.ConflictException;
 import com.casalibertad.exceptions.NotFoundException;
 import com.casalibertad.repositories.VisitorRepository;
 
@@ -22,6 +24,12 @@ public class VisitorService {
 	private UserService userService;
 	@Autowired
 	private VisitorRepository visitorRepository;
+	@Autowired
+	private ReasonVisitService reasonVisitService;
+	@Autowired
+	private WorkshopAppointmentService workshopAppointmentService;
+	@Autowired
+	private ServiceChannelService serviceChannelService;
 
 
 	public VisitorDTO getVisitorDTO(int document_type_id, String document_type_number ) throws NotFoundException {
@@ -87,6 +95,52 @@ public class VisitorService {
 	public VisitorEntity getVisitorEntity(int document_type_id, String document_type_number) throws NotFoundException {
 		UserEntity userEntity = userService.getUserEntity(document_type_id, document_type_number);
 		VisitorEntity visitorEntity = visitorRepository.findFirstByUserOrderByCreatedDateDesc(userEntity); 
+		
+		return visitorEntity;
+	}
+
+	public boolean isValidVisitorDTO(NewVisitorDTO newVisitorDTO) throws NotFoundException, ConflictException {
+		boolean valid = false;
+		
+		if(reasonVisitService.isValidReasonVisitEntity(newVisitorDTO.getReason_visit_id())
+				&& serviceChannelService.isValidServiceChannelEntity(newVisitorDTO.getService_channel_id())
+				&& userService.isValidUserDTO(newVisitorDTO.getUser())) {
+			if(newVisitorDTO.getWorkshop_appointment_id() != 0) {
+				workshopAppointmentService.isValidWorkshopAppointment(newVisitorDTO.getWorkshop_appointment_id());
+				valid = true;
+			}
+		}
+		
+		
+		return valid;
+	}
+
+	public VisitorEntity createVisitorEntity(NewVisitorDTO newVisitorDTO) throws NotFoundException {
+		
+		int workshopAppointmentId = newVisitorDTO.getWorkshop_appointment_id();
+		VisitorEntity visitorEntity = new VisitorEntity();
+		
+		/*Creating entity fields*/
+		UserEntity userEntity = userService.createUserEntity(newVisitorDTO.getUser());
+		ReasonVisitEntity reasonVisitEntity = reasonVisitService.getReasonVisitEntity(newVisitorDTO.getReason_visit_id());
+		
+		/*Workshop appointment not always will be given*/
+		WorkshopAppointmentReasonEntity workshopAppointmentReasonEntity = null;
+		if(workshopAppointmentId != 0) {
+			workshopAppointmentReasonEntity = workshopAppointmentService.getWorkshopAppointment(newVisitorDTO.getWorkshop_appointment_id());
+		}
+
+		ServiceChannelEntity serviceChannelEntity = serviceChannelService.getServiceChannelEntity(
+				newVisitorDTO.getService_channel_id());
+		
+		/*Filling the new visitor entity*/
+		visitorEntity.setUser(userEntity);
+		visitorEntity.setDataProcessingConsent(newVisitorDTO.getData_processing_consent());
+		visitorEntity.setReasonVisit(reasonVisitEntity);
+		visitorEntity.setOtherReason(newVisitorDTO.getOther_reason());
+		visitorEntity.setWorkshopAppointment(workshopAppointmentReasonEntity);
+		visitorEntity.setServiceChannel(serviceChannelEntity);
+		
 		
 		return visitorEntity;
 	}
