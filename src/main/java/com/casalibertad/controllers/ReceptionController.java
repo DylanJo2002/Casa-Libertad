@@ -24,11 +24,13 @@ public class ReceptionController {
 	
 	@Autowired
 	private VisitorService visitorService;
+	@Autowired
+	private UserService userService;
 	
 	@GetMapping
 	public ResponseEntity<VisitorDTO> getVisitorInformation(@RequestParam int document_type_id
 			, @RequestParam String document_number ) throws Exception{
-
+		
 		VisitorDTO visitorDTO = visitorService.getVisitorDTO(document_type_id, document_number);
 		return new ResponseEntity<VisitorDTO>(visitorDTO, HttpStatus.OK);
 	}
@@ -37,7 +39,8 @@ public class ReceptionController {
 	public ResponseEntity<VisitorDTO> createVisitorInformation(@RequestBody NewVisitorDTO newVisitorDTO)
 			throws NotFoundException, ConflictException{
 		VisitorDTO visitorDTO = null;
-		if(visitorService.isValidVisitorDTO(newVisitorDTO)) {
+		if(visitorService.isValidVisitorDTO(newVisitorDTO) && userService.isValidNewUserDTO(newVisitorDTO.getUser())) {
+			userService.createUserEntity(newVisitorDTO.getUser());
 			visitorDTO = visitorService.mapToVisitorDTO(
 					visitorService.createVisitorEntity(newVisitorDTO));
 		}
@@ -46,9 +49,18 @@ public class ReceptionController {
 	}
 	
 	@PutMapping
-	public ResponseEntity<?> updateVisitorInformation(){
+	public ResponseEntity<VisitorDTO> updateVisitorInformation(@RequestBody NewVisitorDTO newVisitorDTO,
+			@RequestParam int document_type_id, @RequestParam String document_number )
+			throws NotFoundException, ConflictException{
+		VisitorDTO visitorDTO = null;
+		if(visitorService.isValidVisitorDTO(newVisitorDTO) && userService.isValidUpdatedUserDTO(
+				document_type_id, document_number, newVisitorDTO.getUser())) {
+			userService.updateUserEntity(document_type_id, document_number, newVisitorDTO.getUser());
+			visitorDTO = visitorService.mapToVisitorDTO(
+					visitorService.createVisitorEntity(newVisitorDTO));
+		}
 		
-		return null;
+		return new ResponseEntity<VisitorDTO>(visitorDTO, HttpStatus.OK);
 	}
 	
 }

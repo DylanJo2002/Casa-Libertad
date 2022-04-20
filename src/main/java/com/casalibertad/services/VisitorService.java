@@ -3,6 +3,7 @@ package com.casalibertad.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.casalibertad.dtos.request.NewUserDTO;
 import com.casalibertad.dtos.request.NewVisitorDTO;
 import com.casalibertad.dtos.response.ServiceChannelDTO;
 import com.casalibertad.dtos.response.UserDTO;
@@ -99,12 +100,11 @@ public class VisitorService {
 		return visitorEntity;
 	}
 
-	public boolean isValidVisitorDTO(NewVisitorDTO newVisitorDTO) throws NotFoundException, ConflictException {
+	public boolean isValidVisitorDTO(NewVisitorDTO newVisitorDTO) throws NotFoundException {
 		boolean valid = false;
 		
 		if(reasonVisitService.isValidReasonVisitEntity(newVisitorDTO.getReason_visit_id())
-				&& serviceChannelService.isValidServiceChannelEntity(newVisitorDTO.getService_channel_id())
-				&& userService.isValidUserDTO(newVisitorDTO.getUser())) {
+				&& serviceChannelService.isValidServiceChannelEntity(newVisitorDTO.getService_channel_id())) {
 			if(newVisitorDTO.getWorkshop_appointment_id() != 0) {
 				workshopAppointmentService.isValidWorkshopAppointment(newVisitorDTO.getWorkshop_appointment_id());
 				valid = true;
@@ -120,8 +120,10 @@ public class VisitorService {
 		int workshopAppointmentId = newVisitorDTO.getWorkshop_appointment_id();
 		VisitorEntity visitorEntity = new VisitorEntity();
 		
+		NewUserDTO userDTO = newVisitorDTO.getUser();
+		
 		/*Creating entity fields*/
-		UserEntity userEntity = userService.createUserEntity(newVisitorDTO.getUser());
+		UserEntity userEntity = userService.getUserEntity(userDTO.getDocument_type_id(), userDTO.getDocument_number());
 		ReasonVisitEntity reasonVisitEntity = reasonVisitService.getReasonVisitEntity(newVisitorDTO.getReason_visit_id());
 		
 		/*Workshop appointment not always will be given*/
@@ -141,7 +143,7 @@ public class VisitorService {
 		visitorEntity.setWorkshopAppointment(workshopAppointmentReasonEntity);
 		visitorEntity.setServiceChannel(serviceChannelEntity);
 		
-		
-		return visitorEntity;
+		return visitorRepository.save(visitorEntity);
 	}
+	
 }

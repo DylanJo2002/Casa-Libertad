@@ -81,8 +81,30 @@ public class UserService {
 		
 		return userRepository.save(userEntity);
 	}
+	
+	public UserEntity updateUserEntity(int document_type_id, String document_number,
+			NewUserDTO userDTO) throws NotFoundException {
+		
+		DocumentTypeEntity documentTypeEntity = documentTypeService.getDocumentType(document_type_id);
+		DocumentTypeEntity updatedocumentTypeEntity = documentTypeService.getDocumentType(
+				userDTO.getDocument_type_id());
+		
+		UserEntity userEntity = userRepository.findByDocumentTypeAndDocumentNumber(
+				documentTypeEntity, document_number);
+		
+		
+		userEntity.setDocumentType(updatedocumentTypeEntity);
+		userEntity.setDocumentNumber(userDTO.getDocument_number());
+		userEntity.setNamesUser(userDTO.getNames_user());
+		userEntity.setFirstLastName(userDTO.getFirst_last_name());
+		userEntity.setSecoundLastName(userDTO.getSecound_last_name());
+		userEntity.setPhone1(userDTO.getPhone_1());
+		userEntity.setPhone2(userDTO.getPhone_2());
+		
+		return userRepository.save(userEntity);
+	}
 
-	public boolean isValidUserDTO(NewUserDTO userDTO) 
+	public boolean isValidNewUserDTO(NewUserDTO userDTO) 
 			throws NotFoundException, ConflictException {
 		
 		
@@ -104,6 +126,35 @@ public class UserService {
 			throw new ConflictException(message);
 		}
 		
+
 		return documentTypeEntity != null;
 	}
+	
+	public boolean isValidUpdatedUserDTO(int document_type_id, String document_number, NewUserDTO userDTO) 
+			throws NotFoundException, ConflictException {
+		
+		DocumentTypeEntity documentTypeEntity =  documentTypeService.getDocumentType(document_type_id);
+		UserEntity userEntity = userRepository
+				.findByDocumentTypeAndDocumentNumber(documentTypeEntity, document_number);
+		
+		/*To valid there is the user to update */
+		if(userEntity == null) {
+			String cause = String.format("There is not an user registred with %s and %s", 
+					documentTypeEntity.getDocumentName(),userDTO.getDocument_number());
+			String id = exceptionLoggin.getUUID();
+			String message = exceptionLoggin.buildMessage(ErrorMessageEnum.NotFoundException, id, cause);
+			exceptionLoggin.saveLog(message, id);
+			
+			throw new NotFoundException(message);
+		}
+		
+		if(userEntity.getDocumentNumber() != userDTO.getDocument_number() 
+				&& userEntity.getDocumentType().getUniqid() != userDTO.getDocument_type_id()) {
+			/*To valid there is not other user with same document type and document number update */
+			return isValidNewUserDTO(userDTO);
+		}
+
+		return true;
+	}
+
 }
