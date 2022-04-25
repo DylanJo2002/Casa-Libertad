@@ -19,7 +19,7 @@ public class ServiceChannelService {
 	
 	public ServiceChannelEntity getServiceChannelEntity(int uniqid) throws NotFoundException {
 		ServiceChannelEntity serviceChannelEntity = 
-				serviceChannelRepository.getById(uniqid);
+				serviceChannelRepository.findByUniqid(uniqid);
 		
 		if(serviceChannelEntity == null) {
 			String cause = String.format("Does not exist a service channel with id %d", 

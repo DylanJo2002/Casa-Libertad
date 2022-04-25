@@ -86,7 +86,10 @@ public class VisitorService {
 	/*When there a user, but there is not any visitor entity according*/
 	private VisitorDTO mapToEmptyVisitorDTO(int document_type_id, String document_type_number) throws NotFoundException {
 		VisitorDTO visitorDTO = new VisitorDTO();
-		visitorDTO.setUser(null);
+		UserDTO userDTO = userService.getUserDTO(document_type_id, document_type_number);
+		if(userDTO != null) {
+			visitorDTO.setUser(userDTO);
+		}
 		return visitorDTO;
 	}
 	
@@ -95,7 +98,10 @@ public class VisitorService {
 		try {
 			UserEntity userEntity = userService.getUserEntity(document_type_id, document_type_number);
 			visitorEntity = visitorRepository.findFirstByUserOrderByCreatedDateDesc(userEntity); 
-
+			if(visitorEntity == null) {
+				return null;
+			}
+			visitorEntity.setUser(userEntity);
 		}catch(NotFoundException e) {
 			/*Catching error when there's not a user with document type and number provided*/
 		}
@@ -108,10 +114,11 @@ public class VisitorService {
 		
 		if(reasonVisitService.isValidReasonVisitEntity(newVisitorDTO.getReason_visit_id())
 				&& serviceChannelService.isValidServiceChannelEntity(newVisitorDTO.getService_channel_id())) {
+			
 			if(newVisitorDTO.getWorkshop_appointment_id() != 0) {
 				workshopAppointmentService.isValidWorkshopAppointment(newVisitorDTO.getWorkshop_appointment_id());
-				valid = true;
 			}
+			valid = true;
 		}
 		
 		
