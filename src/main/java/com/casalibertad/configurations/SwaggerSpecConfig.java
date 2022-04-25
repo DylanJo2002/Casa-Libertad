@@ -21,7 +21,7 @@ public class SwaggerSpecConfig {
         return () -> {
         	
             SwaggerResource wsResource = new SwaggerResource();
-            wsResource.setName("new spec");
+            wsResource.setName("My new spec");
             wsResource.setSwaggerVersion("2.0");
             Logger log  = Logger.getLogger(this.getClass().toString());
             wsResource.setLocation("/swagger.json");

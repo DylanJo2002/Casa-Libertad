@@ -14,10 +14,6 @@
   },
   "servers": [
     {
-      "url": "https://virtserver.swaggerhub.com/DylanJo2002/Casa_Libertad/1.0.0",
-      "description": "SwaggerHub API Auto Mocking"
-    },
-    {
       "url": "http://localhost:8080/api",
       "description": "Development Server"
     }

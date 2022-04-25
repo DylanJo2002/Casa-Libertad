@@ -1,5 +1,7 @@
 package com.casalibertad.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +31,6 @@ public class UserService {
 		//documentTypeService.getDocumentType validate document type existence
 		DocumentTypeEntity documentTypeEntity = documentTypeService.getDocumentType(document_type_id);
 		UserEntity userEntity = userRepository.findByDocumentTypeAndDocumentNumber(documentTypeEntity, document_type_number);		
-		
 		if(userEntity == null) {
 			String cause = String.format("Does not exist an user with document type %s and document number %s", 
 					documentTypeEntity.getDocumentName(),document_type_number);
@@ -111,9 +112,8 @@ public class UserService {
 		DocumentTypeEntity documentTypeEntity = documentTypeService.getDocumentType(
 				userDTO.getDocument_type_id());
 		
-		UserEntity userEntity = userRepository
-				.findByDocumentTypeAndDocumentNumber(documentTypeEntity, userDTO.getDocument_number());
-
+		UserEntity userEntity = userRepository.findByDocumentTypeAndDocumentNumber(documentTypeEntity, 
+				userDTO.getDocument_number());		
 		/*To valid there is not some user with same document type and number */
 
 		if(userEntity != null) {
@@ -134,13 +134,17 @@ public class UserService {
 			throws NotFoundException, ConflictException {
 		
 		DocumentTypeEntity documentTypeEntity =  documentTypeService.getDocumentType(document_type_id);
+		DocumentTypeEntity documentTypeInDB =  documentTypeService.getDocumentType(userDTO.getDocument_type_id());
+		
 		UserEntity userEntity = userRepository
 				.findByDocumentTypeAndDocumentNumber(documentTypeEntity, document_number);
+		UserEntity userInDB = userRepository
+				.findByDocumentTypeAndDocumentNumber(documentTypeInDB, userDTO.getDocument_number());
 		
 		/*To valid there is the user to update */
 		if(userEntity == null) {
 			String cause = String.format("There is not an user registred with %s and %s", 
-					documentTypeEntity.getDocumentName(),userDTO.getDocument_number());
+					documentTypeEntity.getDocumentName(),document_number);
 			String id = exceptionLoggin.getUUID();
 			String message = exceptionLoggin.buildMessage(ErrorMessageEnum.NotFoundException, id, cause);
 			exceptionLoggin.saveLog(message, id);
@@ -148,10 +152,17 @@ public class UserService {
 			throw new NotFoundException(message);
 		}
 		
-		if(userEntity.getDocumentNumber() != userDTO.getDocument_number() 
-				&& userEntity.getDocumentType().getUniqid() != userDTO.getDocument_type_id()) {
-			/*To valid there is not other user with same document type and document number update */
-			return isValidNewUserDTO(userDTO);
+		if(userInDB != null) {
+			if(userEntity.getUniqid() != userInDB.getUniqid()) {
+				/*To valid there is not other user with same document type and document number update */
+				String cause = String.format("There is already an user registred with %s and %s", 
+						documentTypeEntity.getDocumentName(),userDTO.getDocument_number());
+				String id = exceptionLoggin.getUUID();
+				String message = exceptionLoggin.buildMessage(ErrorMessageEnum.ConflictException, id, cause);
+				exceptionLoggin.saveLog(message, id);
+			
+				throw new ConflictException(message);
+			}
 		}
 
 		return true;

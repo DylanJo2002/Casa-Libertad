@@ -85,17 +85,20 @@ public class VisitorService {
 
 	/*When there a user, but there is not any visitor entity according*/
 	private VisitorDTO mapToEmptyVisitorDTO(int document_type_id, String document_type_number) throws NotFoundException {
-		UserDTO userDTO = userService.getUserDTO(document_type_id, document_type_number);
-		
 		VisitorDTO visitorDTO = new VisitorDTO();
-		visitorDTO.setUser(userDTO);
-		
+		visitorDTO.setUser(null);
 		return visitorDTO;
 	}
 	
-	public VisitorEntity getVisitorEntity(int document_type_id, String document_type_number) throws NotFoundException {
-		UserEntity userEntity = userService.getUserEntity(document_type_id, document_type_number);
-		VisitorEntity visitorEntity = visitorRepository.findFirstByUserOrderByCreatedDateDesc(userEntity); 
+	public VisitorEntity getVisitorEntity(int document_type_id, String document_type_number) {
+		VisitorEntity visitorEntity = null;
+		try {
+			UserEntity userEntity = userService.getUserEntity(document_type_id, document_type_number);
+			visitorEntity = visitorRepository.findFirstByUserOrderByCreatedDateDesc(userEntity); 
+
+		}catch(NotFoundException e) {
+			/*Catching error when there's not a user with document type and number provided*/
+		}
 		
 		return visitorEntity;
 	}

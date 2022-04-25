@@ -15,6 +15,7 @@ import com.casalibertad.dtos.request.NewVisitorDTO;
 import com.casalibertad.dtos.response.VisitorDTO;
 import com.casalibertad.exceptions.ConflictException;
 import com.casalibertad.exceptions.NotFoundException;
+import com.casalibertad.loggin.ExceptionLoggin;
 import com.casalibertad.services.UserService;
 import com.casalibertad.services.VisitorService;
 
@@ -26,6 +27,9 @@ public class ReceptionController {
 	private VisitorService visitorService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private ExceptionLoggin exceptionLoggin;
+
 	
 	@GetMapping
 	public ResponseEntity<VisitorDTO> getVisitorInformation(@RequestParam int document_type_id
