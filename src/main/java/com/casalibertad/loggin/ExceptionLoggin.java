@@ -20,11 +20,13 @@ public class ExceptionLoggin {
 		return UUID.randomUUID().toString();
 	}
 	
-	public String buildMessage(ErrorMessageEnum message, String id, String cause) {
+	public String buildMessage(ErrorMessageEnum message, String id, String cause, String classname) {
 		StringBuilder builder = new StringBuilder(ErrorMessageEnum
 				.getKey(message))
 				.append(id.concat("."))
-				.append(" ".concat(cause));
+				.append(" ".concat(cause))
+				.append(". ".concat(classname));
+
 		return builder.toString();
 	}
 	

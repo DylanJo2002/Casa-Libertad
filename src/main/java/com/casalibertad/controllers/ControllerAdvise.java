@@ -24,7 +24,7 @@ public class ControllerAdvise {
 	public ResponseEntity<ErrorDTO> exceptionHandler(Throwable ex) {
 		String id = exceptionLoggin.getUUID();
 		String message = exceptionLoggin.buildMessage(ErrorMessageEnum.InternalError,id
-				,ex.getMessage());
+				,ex.getMessage(), this.getClass().toString());
 		exceptionLoggin.saveLog(message,id);
 		ErrorDTO errorDTO = new ErrorDTO(message);
 		return new ResponseEntity<ErrorDTO>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);

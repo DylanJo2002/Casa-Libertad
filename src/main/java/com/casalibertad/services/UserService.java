@@ -35,7 +35,8 @@ public class UserService {
 			String cause = String.format("Does not exist an user with document type %s and document number %s", 
 					documentTypeEntity.getDocumentName(),document_type_number);
 			String id = exceptionLoggin.getUUID();
-			String message = exceptionLoggin.buildMessage(ErrorMessageEnum.NotFoundException, id, cause);
+			String message = exceptionLoggin.buildMessage(ErrorMessageEnum.NotFoundException, id, cause
+					,this.getClass().toString());
 			exceptionLoggin.saveLog(message, id);
 			
 			throw new NotFoundException(message);
@@ -120,7 +121,8 @@ public class UserService {
 			String cause = String.format("There is already an user registred with %s and %s", 
 					documentTypeEntity.getDocumentName(),userDTO.getDocument_number());
 			String id = exceptionLoggin.getUUID();
-			String message = exceptionLoggin.buildMessage(ErrorMessageEnum.ConflictException, id, cause);
+			String message = exceptionLoggin.buildMessage(ErrorMessageEnum.ConflictException, id, cause
+					, this.getClass().toString());
 			exceptionLoggin.saveLog(message, id);
 			
 			throw new ConflictException(message);
@@ -146,7 +148,8 @@ public class UserService {
 			String cause = String.format("There is not an user registred with %s and %s", 
 					documentTypeEntity.getDocumentName(),document_number);
 			String id = exceptionLoggin.getUUID();
-			String message = exceptionLoggin.buildMessage(ErrorMessageEnum.NotFoundException, id, cause);
+			String message = exceptionLoggin.buildMessage(ErrorMessageEnum.NotFoundException, id, cause
+					, this.getClass().toString());
 			exceptionLoggin.saveLog(message, id);
 			
 			throw new NotFoundException(message);
@@ -158,7 +161,8 @@ public class UserService {
 				String cause = String.format("There is already an user registred with %s and %s", 
 						documentTypeEntity.getDocumentName(),userDTO.getDocument_number());
 				String id = exceptionLoggin.getUUID();
-				String message = exceptionLoggin.buildMessage(ErrorMessageEnum.ConflictException, id, cause);
+				String message = exceptionLoggin.buildMessage(ErrorMessageEnum.ConflictException, id, cause
+						, this.getClass().toString());
 				exceptionLoggin.saveLog(message, id);
 			
 				throw new ConflictException(message);

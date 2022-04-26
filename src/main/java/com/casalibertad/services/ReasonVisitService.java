@@ -24,7 +24,8 @@ public class ReasonVisitService {
 			String cause = String.format("Does not exist a reason visit with id %d", 
 					uniqid);
 			String id = exceptionLoggin.getUUID();
-			String message = exceptionLoggin.buildMessage(ErrorMessageEnum.NotFoundException, id, cause);
+			String message = exceptionLoggin.buildMessage(ErrorMessageEnum.NotFoundException, id, cause
+					,this.getClass().toString());
 			exceptionLoggin.saveLog(message, id);
 			
 			throw new NotFoundException(message);
